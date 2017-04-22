@@ -12,16 +12,19 @@ import java.util.List;
 import realmtrial.tabedskurwiel.Data.Route;
 
 @SuppressLint("InflateParams")
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class AddingAdapter extends RecyclerView.Adapter<AddingAdapter.ViewHolder> {
     private List<Route> routeList;
 
-    public MyAdapter(List<Route> routeList) {
+    public AddingAdapter(List<Route> routeList) {
         this.routeList = routeList;
     }
 
+    public void setRouteList(List<Route> routeList) {
+        this.routeList = routeList;
+    }
 
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
+    public AddingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         //create view and viewholder
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fruit, null);

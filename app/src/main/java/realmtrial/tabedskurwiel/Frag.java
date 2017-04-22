@@ -1,16 +1,13 @@
 package realmtrial.tabedskurwiel;
 
-import android.graphics.Canvas;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import realmtrial.tabedskurwiel.Data.Randomizer;
 
@@ -57,7 +54,7 @@ public class Frag extends Fragment {
 
         //set layoutManger
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        MyAdapter mAdapter = new MyAdapter(random.randomizedRoutes());
+        AddingAdapter mAdapter = new AddingAdapter(random.randomizedRoutes());
         //set adapter
         recyclerView.setAdapter(mAdapter);
         //set item animator to DefaultAnimator

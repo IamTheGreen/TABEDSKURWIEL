@@ -17,6 +17,5 @@ public interface iAddingMvp {
     }
     interface View{
        void onSaveButtonClick();
-        coś tam sobie wpisałem
     }
 }

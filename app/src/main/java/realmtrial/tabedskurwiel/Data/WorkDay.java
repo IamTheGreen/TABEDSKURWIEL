@@ -13,13 +13,17 @@ public class WorkDay {
     private Date date;
     private List<Route>routeList;
     private boolean isFinished;
+    public static WorkDay instance;
 
     public WorkDay(){
         this.routeList = new ArrayList<>();
-        routeList.add(new Route(1));
-//        routeList.add(new Route(2));
-//        routeList.add(new Route(3));
-//        routeList.add(new Route(4));
+    }
+
+    public static WorkDay getInstance(){
+        if (instance==null){
+            instance = new WorkDay();
+        }
+        return instance;
     }
 
     public long getId() {

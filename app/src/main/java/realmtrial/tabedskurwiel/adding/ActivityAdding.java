@@ -1,35 +1,42 @@
 package realmtrial.tabedskurwiel.adding;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import realmtrial.tabedskurwiel.AddingAdapter;
 import realmtrial.tabedskurwiel.Data.Randomizer;
 import realmtrial.tabedskurwiel.Data.Route;
 import realmtrial.tabedskurwiel.Data.WorkDay;
-import realmtrial.tabedskurwiel.MyAdapter;
 import realmtrial.tabedskurwiel.R;
 
 public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View {
     private iAddingMvp.Presenter presenter;
     private int mYear, mMonth, mDay;
     private final Calendar c = Calendar.getInstance();
-    private WorkDay workDayHolder = null;
+    private WorkDay workDayHolder;
     private final Randomizer random = new Randomizer();
     private RecyclerView recyclerView;
+    private AddingAdapter adapter;
     private Toolbar toolbar;
 
     @BindView(R.id.adding_date)
@@ -46,6 +53,8 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     EditText minutes;
     @BindView(R.id.adding_status_bar)
     TextView statusBar;
+    @BindView(R.id.adding_checkbox_day_finished)
+    CheckBox isFinished;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +66,22 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
+        isFinished = (CheckBox) findViewById(R.id.adding_checkbox_day_finished);
         presenter = new AddingPresenter(this, new AddingModel());
-        workDayHolder = new WorkDay();
+        workDayHolder = WorkDay.getInstance();
         initializeDateField();
         initializeRecyclerView();
+
+        isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    workDayHolder.setFinished(true);
+                } else {
+                    workDayHolder.setFinished(false);
+                }
+            }
+        });
     }
 
     void initializeDateField() {
@@ -73,9 +93,9 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
 
     void initializeRecyclerView(){
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        MyAdapter mAdapter = new MyAdapter(random.randomizedRoutes());
+        adapter = new AddingAdapter(workDayHolder.getRouteList());
         //set adapter
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(adapter);
         //set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -96,10 +116,16 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
-        buildRoute();
+        if(workDayHolder.isFinished()){
+            buildWorkDay();
+        } else {
+            buildRoute();
+        }
+        startLocation.requestFocus();
     }
 
     Route buildRoute() {
+        workDayHolder = WorkDay.getInstance();
         int routeId = 0;
         try{
             routeId = workDayHolder.getRouteList().get(workDayHolder.getRouteList().size()-1).getId()+1;
@@ -110,16 +136,55 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         }
         finally {
             statusBar.setText(""+routeId);
-            workDayHolder.getRouteList().add(new Route(routeId));
+
+            Route route = new Route(routeId,
+                    startLocation.getText().toString(),
+                    stopLocation.getText().toString(),
+                    parseNumericalEntry(distance),
+                    parseNumericalEntry(hours),
+                    parseNumericalEntry(minutes)
+                    );
+            workDayHolder.getRouteList().add(route);
+            adapter.notifyDataSetChanged();
+            resetFields();
         }
         return null;
     }
+
+    WorkDay buildWorkDay(){
+         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage("Zakończyłeś dzień pracy. Wszystkie wpisy zostały zapisane");
+        alert.setPositiveButton("Potwierdzam", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                statusBar.setText("Dziękujemy za dodanie wpisu.");
+            }
+        });
+        alert.create();
+        alert.show();
+        return null;
+    }
+
+    int parseNumericalEntry(EditText editText){
+        int parsedEntry = 0;
+        try{
+            parsedEntry = Integer.parseInt(editText.getText().toString());
+        }catch (NumberFormatException exp){
+            editText.setText("0");
+            Toast.makeText(this, "Puste pole zastąpione zostaną zerami", Toast.LENGTH_SHORT).show();
+        }
+        return parsedEntry;
+    }
+
+    void resetFields(){
+        startLocation.setText("");
+        stopLocation.setText("");
+        distance.setText("");
+        hours.setText("");
+        minutes.setText("");
+        statusBar.setText("Wpis dodany, pola wyzerowane");
+    }
 }
-
-
-
-
-
 
 
 

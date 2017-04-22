@@ -20,14 +20,13 @@ public class Route {
         this.id = id;
     }
 
-    public Route(int id, String locationStart, String locationStop, int distance, int hours, int minutes, int time) {
+    public Route(int id, String locationStart, String locationStop, int distance, int hours, int minutes) {
         this.id = id;
         this.locationStart = locationStart;
         this.locationStop = locationStop;
         this.distance = distance;
         this.hours = hours;
         this.minutes = minutes;
-        this.time = time;
     }
 
     public int getHours() {
@@ -76,14 +75,6 @@ public class Route {
 
     public void setDistance(int distance) {
         this.distance = distance;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
     }
 
     @Override
