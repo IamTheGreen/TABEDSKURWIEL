@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adding_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="realmtrial.tabedskurwiel.adding.ActivityAdding"
+    tools:showIn="@layout/activity_adding"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+
+    <Button
+        android:id="@+id/button"
+        style="@android:style/Widget.DeviceDefault.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Zapisz"
+        app:layout_constraintBaseline_toBaselineOf="@+id/adding_checkbox_day_finished"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <CheckBox
+        android:id="@+id/adding_checkbox_day_finished"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zakończ okres rozliczeniowy"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
+        android:layout_marginStart="8dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:text=":"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintLeft_toRightOf="@+id/textInputLayout8"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout7"
+        app:layout_constraintVertical_bias="0.73"
+        tools:layout_constraintBottom_creator="1" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout7"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout7"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintHorizontal_bias="0.44" />
+
+    <TextView
+        android:id="@+id/adding_status_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Status Bar"
+        android:textAlignment="textEnd"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/textInputLayout6"
+        app:layout_constraintTop_toBottomOf="@+id/adding_status_bar">
+
+        <EditText
+            android:id="@+id/adding_start_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Miejsce rozpoczęcia"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:imeOptions="actionNext"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/textInputLayout5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adding_status_bar">
+
+        <EditText
+            android:id="@+id/adding_stop_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Miejsce zakończenia"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:imeOptions="actionNext"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout8"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"
+        tools:layout_constraintTop_creator="1">
+
+        <EditText
+            android:id="@+id/adding_hours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Godzin"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textAlignment="textEnd"
+            android:textSize="18sp"
+            android:imeOptions="actionNext"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout9"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintLeft_toRightOf="@+id/space"
+        app:layout_constraintRight_toLeftOf="@+id/textInputLayout10"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout8"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintTop_creator="1"
+        >
+
+        <EditText
+            android:id="@+id/adding_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Przebieg"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:imeOptions="actionNext"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout8"
+        app:layout_constraintLeft_toRightOf="@+id/textInputLayout9"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout8"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintTop_creator="1">
+
+        <EditText
+            android:id="@+id/adding_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Data"
+            android:singleLine="true"
+            android:textAlignment="textEnd"
+            android:textSize="18sp"
+            android:imeOptions="actionDone"
+            android:nextFocusDown="@+id/button"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/textInputLayout7"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textInputLayout8"
+        tools:layout_constraintTop_creator="1">
+
+        <EditText
+            android:id="@+id/adding_minutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Minut"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textAlignment="textStart"
+            android:textSize="18sp"
+            android:imeOptions="actionNext"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/adding_recycler_container"
+        android:layout_width="0dp"
+        android:layout_height="511dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="17dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adding_checkbox_day_finished"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+</android.support.constraint.ConstraintLayout>
