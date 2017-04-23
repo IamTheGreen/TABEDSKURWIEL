@@ -97,6 +97,8 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         initializeRecyclerView();
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
