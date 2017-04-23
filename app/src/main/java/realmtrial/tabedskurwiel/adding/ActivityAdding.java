@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -17,12 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import io.realm.Realm;
+import io.realm.RealmList;
 import realmtrial.tabedskurwiel.AddingAdapter;
 import realmtrial.tabedskurwiel.Data.Randomizer;
 import realmtrial.tabedskurwiel.Data.Route;
@@ -37,7 +42,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     private final Randomizer random = new Randomizer();
     private RecyclerView recyclerView;
     private AddingAdapter adapter;
-    private Toolbar toolbar;
 
     @BindView(R.id.adding_date)
     EditText date;
@@ -55,6 +59,9 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     TextView statusBar;
     @BindView(R.id.adding_checkbox_day_finished)
     CheckBox isFinished;
+    @BindView(R.id.button) Button zapisz;
+    @BindView(R.id.button_clear)
+    Button clear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +75,8 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
 
         isFinished = (CheckBox) findViewById(R.id.adding_checkbox_day_finished);
         presenter = new AddingPresenter(this, new AddingModel());
-        workDayHolder = WorkDay.getInstance();
-        initializeDateField();
-        initializeRecyclerView();
+        presenter.onCreate();
+        statusBar.setClickable(true);
 
         isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -82,6 +88,25 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
                 }
             }
         });
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        initializeDateField();
+        initializeRecyclerView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onCreate();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        onSaveButtonClick();
     }
 
     void initializeDateField() {
@@ -112,57 +137,62 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
+    @OnClick(R.id.button_clear)
+    void clearDb(){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+        realm.close();
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
-        if(workDayHolder.isFinished()){
-            buildWorkDay();
-        } else {
-            buildRoute();
-        }
-        startLocation.requestFocus();
+        Route route = new Route();
+        route.setLocationStart(startLocation.getText().toString());
+        route.setLocationStop(stopLocation.getText().toString());
+        route.setDistance(parseNumericalEntry(distance));
+        route.setHours(parseNumericalEntry(hours));
+        route.setMinutes(parseNumericalEntry(minutes));
+        route.setId(workDayHolder.getRouteList().size());
+
+        workDayHolder.getRouteList().add(route);
+        presenter.updateModel(workDayHolder);
+        adapter.notifyDataSetChanged();
     }
 
-    Route buildRoute() {
-        workDayHolder = WorkDay.getInstance();
-        int routeId = 0;
+    @Override
+    public void setWorkDayHolder(WorkDay workDay) {
+        this.workDayHolder = workDay;
+    }
+
+    @Override
+    public WorkDay buildData() {
+        return null;
+    }
+
+    @Override
+    public void updateView() {
+        Route route;
         try{
-            routeId = workDayHolder.getRouteList().get(workDayHolder.getRouteList().size()-1).getId()+1;
-        } catch (NullPointerException ex){
-            statusBar.setText("exception raised");
+           route = workDayHolder.getRouteList().get(workDayHolder.getRouteList().size()-1);
         } catch (ArrayIndexOutOfBoundsException ex){
-            routeId = 1;
+            route = new Route();
         }
-        finally {
-            statusBar.setText(""+routeId);
 
-            Route route = new Route(routeId,
-                    startLocation.getText().toString(),
-                    stopLocation.getText().toString(),
-                    parseNumericalEntry(distance),
-                    parseNumericalEntry(hours),
-                    parseNumericalEntry(minutes)
-                    );
-            workDayHolder.getRouteList().add(route);
-            adapter.notifyDataSetChanged();
-            resetFields();
-        }
-        return null;
+        startLocation.setText(route.getLocationStart());
+        stopLocation.setText(route.getLocationStop());
+        distance.setText(""+route.getDistance());
+        hours.setText(""+route.getHours());
+        minutes.setText(""+route.getMinutes());
+        adapter.setRouteList(workDayHolder.getRouteList());
+        adapter.notifyDataSetChanged();
     }
-
-    WorkDay buildWorkDay(){
-         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage("Zakończyłeś dzień pracy. Wszystkie wpisy zostały zapisane");
-        alert.setPositiveButton("Potwierdzam", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                statusBar.setText("Dziękujemy za dodanie wpisu.");
-            }
-        });
-        alert.create();
-        alert.show();
-        return null;
+    @Override
+    public void updateStatusBar(String s) {
+        statusBar.setText(s);
     }
 
     int parseNumericalEntry(EditText editText){
@@ -174,15 +204,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
             Toast.makeText(this, "Puste pole zastąpione zostaną zerami", Toast.LENGTH_SHORT).show();
         }
         return parsedEntry;
-    }
-
-    void resetFields(){
-        startLocation.setText("");
-        stopLocation.setText("");
-        distance.setText("");
-        hours.setText("");
-        minutes.setText("");
-        statusBar.setText("Wpis dodany, pola wyzerowane");
     }
 }
 

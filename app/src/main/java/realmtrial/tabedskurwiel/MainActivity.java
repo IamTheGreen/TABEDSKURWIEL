@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import realmtrial.tabedskurwiel.adding.ActivityAdding;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(config);
 
     }
 

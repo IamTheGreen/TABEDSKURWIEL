@@ -1,24 +1,22 @@
 package realmtrial.tabedskurwiel.Data;
 
+import io.realm.RealmObject;
+
 /**
  * Created by mttx on 2017-04-18.
  */
 
-public class Route {
-    private int id;
-    private String locationStart;
-    private String locationStop;
-    private int distance;
-    private int hours;
-    private int minutes;
-    private int time;
+public class Route extends RealmObject {
+    private int id = 0;
+    private String locationStart = "";
+    private String locationStop = "";
+    private int distance = 0;
+    private int hours = 0;
+    private int minutes = 0;
 
     public Route() {
     }
 
-    public Route(int id) {
-        this.id = id;
-    }
 
     public Route(int id, String locationStart, String locationStop, int distance, int hours, int minutes) {
         this.id = id;

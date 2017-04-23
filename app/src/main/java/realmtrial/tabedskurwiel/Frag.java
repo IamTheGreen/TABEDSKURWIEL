@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import realmtrial.tabedskurwiel.Data.Randomizer;
+import realmtrial.tabedskurwiel.adding.AddingModel;
 
 /**
  * Created by mttx on 2017-04-17.
  */
 
 public class Frag extends Fragment {
+    private AddingModel addingModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -23,43 +25,6 @@ public class Frag extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_recycler_view, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        final Randomizer random = new Randomizer();
-
-        FruitModel fruitsData[] = { new FruitModel("Apple"),
-                new FruitModel("Banana"),
-                new FruitModel("Orange"),
-                new FruitModel("Pineapple"),
-                new FruitModel("Mango"),
-                new FruitModel("Watermelon"),
-                new FruitModel("Strawberry"),
-                new FruitModel("Grapes"),
-                new FruitModel("Jackfruit"),
-                new FruitModel("Carrot"),  new FruitModel("Orange"),
-                new FruitModel("Pineapple"),
-                new FruitModel("Mango"),
-                new FruitModel("Watermelon"),
-                new FruitModel("Strawberry"),
-                new FruitModel("Grapes"),
-                new FruitModel("Jackfruit"),
-                new FruitModel("Carrot"),
-                new FruitModel("Orange"),
-                new FruitModel("Pineapple"),
-                new FruitModel("Mango"),
-                new FruitModel("Watermelon"),
-                new FruitModel("Strawberry"),
-                new FruitModel("Grapes"),
-                new FruitModel("Jackfruit"),
-                new FruitModel("Carrot"),
-                new FruitModel("Fig")};
-
-        //set layoutManger
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        AddingAdapter mAdapter = new AddingAdapter(random.randomizedRoutes());
-        //set adapter
-        recyclerView.setAdapter(mAdapter);
-        //set item animator to DefaultAnimator
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL) {
 //            @Override
 //            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {

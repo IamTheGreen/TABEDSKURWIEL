@@ -227,21 +227,32 @@
             android:imeOptions="actionNext"/>
     </android.support.design.widget.TextInputLayout>
 
+    <Button
+        android:id="@+id/button_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="104dp"
+        android:layout_marginRight="104dp"
+        android:layout_marginTop="8dp"
+        android:text="Wyczyśc"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout10" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/adding_recycler_container"
-        android:layout_width="0dp"
-        android:layout_height="511dp"
+        android:layout_width="390dp"
+        android:layout_height="280dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="17dp"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="192dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adding_checkbox_day_finished"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintHorizontal_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>
