@@ -10,9 +10,9 @@ public class Route extends RealmObject {
     private int id = 0;
     private String locationStart = "";
     private String locationStop = "";
-    private int distance = 0;
-    private int hours = 0;
-    private int minutes = 0;
+    private int distance;
+    private int hours;
+    private int minutes;
 
     public Route() {
     }

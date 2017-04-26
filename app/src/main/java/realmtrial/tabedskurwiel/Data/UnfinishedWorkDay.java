@@ -1,8 +1,6 @@
 package realmtrial.tabedskurwiel.Data;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -13,21 +11,32 @@ import realmtrial.tabedskurwiel.adding.Days;
  * Created by mttx on 2017-04-21.
  */
 
-public class WorkDay extends RealmObject implements Days{
+public class UnfinishedWorkDay extends RealmObject implements Days {
     @PrimaryKey
     private long id;
     private Date date;
     private Date createdAt;
     private RealmList<Route> routeList;
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     private boolean isFinished;
 
-    public WorkDay(){
+    public UnfinishedWorkDay(){
         this.id = 0;
         this.date = new Date();
         this.createdAt = new Date();
         this.routeList = new RealmList<>();
         this.isFinished = false;
     }
+
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
 
     public long getId() {
         return id;

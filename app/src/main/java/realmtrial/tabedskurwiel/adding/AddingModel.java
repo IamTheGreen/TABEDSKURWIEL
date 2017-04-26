@@ -1,8 +1,12 @@
 package realmtrial.tabedskurwiel.adding;
 
 import java.util.IllegalFormatCodePointException;
+import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmModel;
+import io.realm.RealmResults;
+import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
 import realmtrial.tabedskurwiel.Data.WorkDay;
 
 /**
@@ -11,30 +15,51 @@ import realmtrial.tabedskurwiel.Data.WorkDay;
 
 public class AddingModel implements iAddingMvp.Model {
     private Realm realm;
+    private long primaryKeyIncremented;
 
     public AddingModel() {
         realm = Realm.getDefaultInstance();
     }
 
     @Override
-    public void addOrUpdate(WorkDay workDay) {
+    public void addOrUpdate(Days day) {
         realm.beginTransaction();
+        WorkDay workDay = (WorkDay) day;
         realm.copyToRealmOrUpdate(workDay);
         realm.commitTransaction();
     }
 
-    public WorkDay getUnfinishedEntry(){
-        WorkDay workDay;
+    public UnfinishedWorkDay getUnfinishedEntry(){
+        UnfinishedWorkDay unfinishedWorkDay;
         realm.beginTransaction();
-        WorkDay result = realm.where(WorkDay.class).equalTo("isFinished",false).findFirst();
+        UnfinishedWorkDay result = realm.where(UnfinishedWorkDay.class).findFirst();
 
         try{
-            workDay = realm.copyFromRealm(result);
+            unfinishedWorkDay = realm.copyFromRealm(result);
         }catch (IllegalArgumentException ex){
-            workDay = new WorkDay();
+            unfinishedWorkDay = new UnfinishedWorkDay();
+//            unfinishedWorkDay.setId(getPrimaryKey());
         }
         realm.commitTransaction();
-        return workDay;
+        return unfinishedWorkDay;
+    }
+
+    public List<WorkDay> getAllEntries(){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults results = realm.where(WorkDay.class).findAll();
+        List<WorkDay> lista = realm.copyFromRealm(results);
+        realm.commitTransaction();
+        return lista;
+    }
+    @Override
+    public long getPrimaryKey(){
+     //   Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        long primaryKey;
+        primaryKey = (long) realm.where(WorkDay.class).max("id");
+        realm.commitTransaction();
+        return primaryKey;
     }
 }
 

@@ -17,35 +17,37 @@ public class AddingPresenter implements iAddingMvp.Presenter{
     }
 
     @Override
-    public void updateModel(WorkDay workDay) {
-        model.addOrUpdate(workDay);
+    public Days getUnfinishedEntry(){
+        return model.getUnfinishedEntry();
     }
 
     @Override
     public void onCreate() {
-        view.setWorkDayHolder(model.getUnfinishedEntry());
-        view.updateView();
+        updateView(model.getUnfinishedEntry());
     }
 
     @Override
-    public void onPause(WorkDay workDay){
-        model.addOrUpdate(workDay);
+    public void onRestore(Days day) {
+
     }
+
     @Override
-    public long getNextPrimaryKey(){
-        long key;
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        try {
-            key = realm.where(WorkDay.class).max("id").longValue() + 1;
-        } catch(NullPointerException ex) {
-            key = 0;
-        }
-        view.updateStatusBar(""+key);
-        realm.commitTransaction();
-        return key;
+    public void onPause(Days day) {
+
+    }
+
+    @Override
+    public void onSave(Days day) {
+
+    }
+
+    @Override
+    public void updateView(Days days) {
+
     }
 }
+
+
 
 
 

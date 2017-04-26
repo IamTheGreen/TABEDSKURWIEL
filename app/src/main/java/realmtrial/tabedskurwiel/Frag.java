@@ -1,5 +1,6 @@
 package realmtrial.tabedskurwiel;
 
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -8,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import butterknife.BindView;
 import realmtrial.tabedskurwiel.Data.Randomizer;
 import realmtrial.tabedskurwiel.adding.AddingModel;
 
@@ -18,20 +21,31 @@ import realmtrial.tabedskurwiel.adding.AddingModel;
 
 public class Frag extends Fragment {
     private AddingModel addingModel;
+    private RecyclerView recyclerView;
+    private StatsAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_recycler_view, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL) {
-//            @Override
-//            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-//                // Do not draw the divider
-//            }
-//        });
-
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        addingModel = new AddingModel();
+        adapter = new StatsAdapter(addingModel.getAllEntries());
+        //set adapter
+        recyclerView.setAdapter(adapter);
+        //set item animator to DefaultAnimator
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        TextView status = (TextView)rootView.findViewById(R.id.textView);
+        status.setText(""+addingModel.getAllEntries().size());
         return rootView;
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 }
+
