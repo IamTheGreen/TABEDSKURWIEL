@@ -26,11 +26,13 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 import io.realm.Realm;
 import io.realm.RealmList;
 import realmtrial.tabedskurwiel.AddingAdapter;
 import realmtrial.tabedskurwiel.Data.Randomizer;
 import realmtrial.tabedskurwiel.Data.Route;
+import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
 import realmtrial.tabedskurwiel.Data.WorkDay;
 import realmtrial.tabedskurwiel.R;
 
@@ -38,8 +40,9 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     private iAddingMvp.Presenter presenter;
     private int mYear, mMonth, mDay;
     private final Calendar c = Calendar.getInstance();
+    private UnfinishedWorkDay unfinishedWorkDay = new UnfinishedWorkDay();
     private WorkDay workDayHolder;
-    private final Randomizer random = new Randomizer();
+    private Route route;
     private RecyclerView recyclerView;
     private AddingAdapter adapter;
 
@@ -59,7 +62,8 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     TextView statusBar;
     @BindView(R.id.adding_checkbox_day_finished)
     CheckBox isFinished;
-    @BindView(R.id.button) Button zapisz;
+    @BindView(R.id.button)
+    Button zapisz;
     @BindView(R.id.button_clear)
     Button clear;
 
@@ -72,41 +76,78 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        isFinished = (CheckBox) findViewById(R.id.adding_checkbox_day_finished);
+        initializeDateField();
+        initializeRecyclerView();
         presenter = new AddingPresenter(this, new AddingModel());
-        presenter.onCreate();
-        statusBar.setClickable(true);
+    }
 
-        isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    workDayHolder.setFinished(true);
-                } else {
-                    workDayHolder.setFinished(false);
-                }
+    private void unPackUnfinishedDay() {
+
+        unfinishedWorkDay = (UnfinishedWorkDay) presenter.getUnfinishedEntry();
+        try {
+            route = unfinishedWorkDay.getRouteList().get(unfinishedWorkDay.getRouteList().size() - 1);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            unfinishedWorkDay.getRouteList().add(new Route());
+            route = unfinishedWorkDay.getRouteList().get(0);
+        } finally {
+            startLocation.setText(route.getLocationStart());
+            stopLocation.setText(route.getLocationStop());
+            distance.setText("" + route.getDistance());
+            hours.setText("" + route.getHours());
+            minutes.setText("" + route.getMinutes());
+            if
+                    (!hasInput(route.getLocationStart()) ||
+                    !hasInput(route.getLocationStop()) ||
+                    !hasInput(route.getDistance()) ||
+                    !hasInput(route.getHours()) ||
+                    !hasInput(route.getMinutes())) {
+                try {
+                    unfinishedWorkDay.getRouteList().remove(unfinishedWorkDay.getRouteList().size() - 1);
+                } catch (IndexOutOfBoundsException ex) {}
             }
-        });
+            adapter.setRouteList(unfinishedWorkDay.getRouteList());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private boolean hasInput(String string) {
+        if (string.length() > 0) {
+            return true;
+        } else
+            return false;
+    }
+
+    private boolean hasInput(int i) {
+        if (String.valueOf(i).length() > 0) {
+            return true;
+        } else
+            return false;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        unPackUnfinishedDay();
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-        initializeDateField();
-        initializeRecyclerView();
+    public void onRestart() {
+        super.onRestart();
     }
 
+    @Override
+    public void updateView() {
 
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.onCreate();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         onSaveButtonClick();
     }
@@ -118,16 +159,17 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         date.setText(mDay + "." + (mMonth + 1) + "." + mYear);
     }
 
-    void initializeRecyclerView(){
+    void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new AddingAdapter(workDayHolder.getRouteList());
+        workDayHolder = new WorkDay();
+        adapter = new AddingAdapter(unfinishedWorkDay.getRouteList());
         //set adapter
         recyclerView.setAdapter(adapter);
         //set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    @OnFocusChange(R.id.adding_date)
+    @OnClick(R.id.adding_date)
     void changeDate() {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
@@ -139,69 +181,36 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
+
     @OnClick(R.id.button_clear)
-    void clearDb(){
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.deleteAll();
-        realm.commitTransaction();
-        realm.close();
-        adapter.notifyDataSetChanged();
+    void clearDb() {
+//        Realm realm = Realm.getDefaultInstance();
+//        realm.beginTransaction();
+//        realm.deleteAll();
+//        realm.commitTransaction();
+//        realm.close();
+//        adapter.notifyDataSetChanged();
+        statusBar.setText(route.toString());
+    }
+
+    @OnTextChanged(R.id.adding_start_location)
+    void saveStart() {
+        route.setLocationStart(startLocation.getText().toString());
+        statusBar.setText("" + route.getLocationStart() + " " + unfinishedWorkDay.getRouteList().size());
+
     }
 
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
-        Route route = new Route();
-        route.setLocationStart(startLocation.getText().toString());
-        route.setLocationStop(stopLocation.getText().toString());
-        route.setDistance(parseNumericalEntry(distance));
-        route.setHours(parseNumericalEntry(hours));
-        route.setMinutes(parseNumericalEntry(minutes));
-        route.setId(workDayHolder.getRouteList().size());
-
-        workDayHolder.getRouteList().add(route);
-        presenter.updateModel(workDayHolder);
-        adapter.notifyDataSetChanged();
+        unfinishedWorkDay.getRouteList().add(route);
     }
 
-    @Override
-    public void setWorkDayHolder(WorkDay workDay) {
-        this.workDayHolder = workDay;
-    }
-
-    @Override
-    public WorkDay buildData() {
-        return null;
-    }
-
-    @Override
-    public void updateView() {
-        Route route;
-        try{
-           route = workDayHolder.getRouteList().get(workDayHolder.getRouteList().size()-1);
-        } catch (ArrayIndexOutOfBoundsException ex){
-            route = new Route();
-        }
-
-        startLocation.setText(route.getLocationStart());
-        stopLocation.setText(route.getLocationStop());
-        distance.setText(""+route.getDistance());
-        hours.setText(""+route.getHours());
-        minutes.setText(""+route.getMinutes());
-        adapter.setRouteList(workDayHolder.getRouteList());
-        adapter.notifyDataSetChanged();
-    }
-    @Override
-    public void updateStatusBar(String s) {
-        statusBar.setText(s);
-    }
-
-    int parseNumericalEntry(EditText editText){
+    int parseNumericalEntry(EditText editText) {
         int parsedEntry = 0;
-        try{
+        try {
             parsedEntry = Integer.parseInt(editText.getText().toString());
-        }catch (NumberFormatException exp){
+        } catch (NumberFormatException exp) {
             editText.setText("0");
             Toast.makeText(this, "Puste pole zastąpione zostaną zerami", Toast.LENGTH_SHORT).show();
         }
