@@ -16,12 +16,12 @@ public interface iAddingMvp {
         void onSave(Days day);
         void updateView(Days days);
         Days getUnfinishedEntry();
+        void pushEntryToModel(UnfinishedWorkDay unfinishedWorkDay);
     }
 
     interface Model {
-        void addOrUpdate(Days day);
+        void addOrUpdate(UnfinishedWorkDay unfinishedWorkDay);
         UnfinishedWorkDay getUnfinishedEntry();
-        long getPrimaryKey();
     }
 
     interface View {

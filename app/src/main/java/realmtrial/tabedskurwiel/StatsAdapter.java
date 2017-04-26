@@ -12,7 +12,7 @@ import java.util.List;
 import realmtrial.tabedskurwiel.Data.Route;
 import realmtrial.tabedskurwiel.Data.WorkDay;
 
-@SuppressLint("InflateParams")
+//@SuppressLint("InflateParams")
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> {
     private List<WorkDay> workDayList;
 
@@ -37,10 +37,9 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> 
     // Replace the contents of a view
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        String start = workDayList.get(position).getRouteList().get(0).getLocationStart();
-        String stop = workDayList.get(position).getRouteList().get(0).getLocationStop();
+        List<Route> routeList = workDayList.get(position).getRouteList();
 
-        viewHolder.startLocation.setText(workDayList.get(position).toString() + start + " -- "+ stop);
+        viewHolder.startLocation.setText(workDayList.get(position).toString());
     }
 
     // class to hold a reference to each item of RecyclerView

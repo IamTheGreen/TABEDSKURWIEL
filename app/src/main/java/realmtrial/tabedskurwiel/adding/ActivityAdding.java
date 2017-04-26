@@ -66,6 +66,7 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     Button zapisz;
     @BindView(R.id.button_clear)
     Button clear;
+    CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +79,21 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initializeDateField();
         initializeRecyclerView();
+        checkBox = (CheckBox)findViewById(R.id.adding_checkbox_day_finished);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    unfinishedWorkDay.setFinished(true);
+                } else {
+                    unfinishedWorkDay.setFinished(false);
+                }
+            }
+        });
         presenter = new AddingPresenter(this, new AddingModel());
     }
 
     private void unPackUnfinishedDay() {
-
         unfinishedWorkDay = (UnfinishedWorkDay) presenter.getUnfinishedEntry();
         try {
             route = unfinishedWorkDay.getRouteList().get(unfinishedWorkDay.getRouteList().size() - 1);
@@ -124,7 +135,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
             return false;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -149,7 +159,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
     @Override
     public void onPause() {
         super.onPause();
-        onSaveButtonClick();
     }
 
     void initializeDateField() {
@@ -184,26 +193,43 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
 
     @OnClick(R.id.button_clear)
     void clearDb() {
-//        Realm realm = Realm.getDefaultInstance();
-//        realm.beginTransaction();
-//        realm.deleteAll();
-//        realm.commitTransaction();
-//        realm.close();
-//        adapter.notifyDataSetChanged();
-        statusBar.setText(route.toString());
-    }
-
-    @OnTextChanged(R.id.adding_start_location)
-    void saveStart() {
-        route.setLocationStart(startLocation.getText().toString());
-        statusBar.setText("" + route.getLocationStart() + " " + unfinishedWorkDay.getRouteList().size());
-
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+        realm.close();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
         unfinishedWorkDay.getRouteList().add(route);
+        route = new Route();
+        route.setId(unfinishedWorkDay.getRouteList().size()+1);
+        adapter.notifyDataSetChanged();
+        presenter.pushEntryToModel(unfinishedWorkDay);
+       // saveInputOnLifeCycle();
+        startLocation.requestFocus();
+    }
+
+    @OnFocusChange({R.id.adding_start_location,R.id.adding_stop_location,R.id.adding_distance,R.id.adding_hours,R.id.adding_minutes})
+    void saveInputOnFocusChange(EditText editText){
+        switch (editText.getId()){
+            case R.id.adding_start_location: route.setLocationStart(startLocation.getText().toString());break;
+            case R.id.adding_stop_location:  route.setLocationStop(stopLocation.getText().toString()); break;
+            case R.id.adding_distance:       route.setDistance(parseNumericalEntry(distance)); break;
+            case R.id.adding_hours:          route.setHours(parseNumericalEntry(hours)); break;
+            case R.id.adding_minutes:        route.setMinutes(parseNumericalEntry(minutes)); break;
+        }
+    }
+
+    void saveInputOnLifeCycle(){
+        route.setLocationStart(startLocation.getText().toString());
+        route.setLocationStop(stopLocation.getText().toString());
+        route.setDistance(parseNumericalEntry(distance));
+        route.setHours(parseNumericalEntry(hours));
+        route.setMinutes(parseNumericalEntry(minutes));
     }
 
     int parseNumericalEntry(EditText editText) {
@@ -211,7 +237,7 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.View
         try {
             parsedEntry = Integer.parseInt(editText.getText().toString());
         } catch (NumberFormatException exp) {
-            editText.setText("0");
+            editText.setText("");
             Toast.makeText(this, "Puste pole zastąpione zostaną zerami", Toast.LENGTH_SHORT).show();
         }
         return parsedEntry;

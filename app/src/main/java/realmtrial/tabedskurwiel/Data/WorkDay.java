@@ -19,6 +19,10 @@ public class WorkDay extends RealmObject implements Days{
     private Date date;
     private Date createdAt;
     private RealmList<Route> routeList;
+    private String dayStartLocation;
+    private String dayEndLocation;
+    private int totalDistance;
+    private int totalTime;
     private boolean isFinished;
 
     public WorkDay(){
@@ -29,8 +33,54 @@ public class WorkDay extends RealmObject implements Days{
         this.isFinished = false;
     }
 
+    public void generateSummaryData(){
+        Route route;
+        int minutes =0;
+        for(RealmObject realm : routeList){
+            route = (Route) realm;
+            totalDistance +=route.getDistance();
+            minutes  +=route.getMinutes();
+            totalTime +=route.getHours();
+        }
+        dayStartLocation = routeList.get(0).getLocationStart();
+        dayEndLocation = routeList.get(routeList.size()-1).getLocationStop();
+        totalTime = totalTime + minutes/60;
+    }
+
     public long getId() {
         return id;
+    }
+
+    public String getDayStartLocation() {
+        return dayStartLocation;
+    }
+
+    public void setDayStartLocation(String dayStartLocation) {
+        this.dayStartLocation = dayStartLocation;
+    }
+
+    public String getDayEndLocation() {
+        return dayEndLocation;
+    }
+
+    public void setDayEndLocation(String dayEndLocation) {
+        this.dayEndLocation = dayEndLocation;
+    }
+
+    public int getTotalDistance() {
+        return totalDistance;
+    }
+
+    public void setTotalDistance(int totalDistance) {
+        this.totalDistance = totalDistance;
+    }
+
+    public int getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(int totalTime) {
+        this.totalTime = totalTime;
     }
 
     public RealmList<Route> getRouteList() {
@@ -62,6 +112,6 @@ public class WorkDay extends RealmObject implements Days{
     }
     @Override
     public String toString(){
-        return ""+id;
+        return ""+id + dayStartLocation + " - " +dayEndLocation + "Dystans: "+totalDistance +"KM. - Czas Jazdy:"+ totalTime;
     }
 }

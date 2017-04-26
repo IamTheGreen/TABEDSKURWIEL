@@ -38,7 +38,7 @@ public class Frag extends Fragment {
         //set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         TextView status = (TextView)rootView.findViewById(R.id.textView);
-        status.setText(""+addingModel.getAllEntries().size());
+        status.setText(""+addingModel.getAllEntries().size() + "Rozmiar Listy");
         return rootView;
     }
 

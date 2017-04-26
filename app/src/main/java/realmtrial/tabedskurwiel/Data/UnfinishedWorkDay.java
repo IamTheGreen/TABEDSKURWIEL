@@ -32,12 +32,9 @@ public class UnfinishedWorkDay extends RealmObject implements Days {
         this.isFinished = false;
     }
 
-
     public Date getCreatedAt() {
         return createdAt;
     }
-
-
     public long getId() {
         return id;
     }

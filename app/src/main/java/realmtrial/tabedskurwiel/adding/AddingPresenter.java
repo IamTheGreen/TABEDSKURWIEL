@@ -1,19 +1,24 @@
 package realmtrial.tabedskurwiel.adding;
-import io.realm.Realm;
-import realmtrial.tabedskurwiel.Data.WorkDay;
 
+
+import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
 
 /**
  * Created by mttx on 2017-04-21.
  */
 
 public class AddingPresenter implements iAddingMvp.Presenter{
-    private iAddingMvp.View view;
+    private iAddingMvp.View mainView;
     private iAddingMvp.Model model;
 
-    public AddingPresenter(iAddingMvp.View view, iAddingMvp.Model model) {
-        this.view = view;
+    public AddingPresenter(iAddingMvp.View mainView, iAddingMvp.Model model) {
+        this.mainView = mainView;
         this.model = model;
+    }
+
+    @Override
+    public void pushEntryToModel(UnfinishedWorkDay unfinishedWorkDay){
+        model.addOrUpdate(unfinishedWorkDay);
     }
 
     @Override
