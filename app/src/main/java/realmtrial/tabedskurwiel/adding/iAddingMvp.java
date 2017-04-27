@@ -15,19 +15,21 @@ public interface iAddingMvp {
         void onPause(Days day);
         void onSave(Days day);
         void updateView(Days days);
-        Days getUnfinishedEntry();
+        UnfinishedWorkDay getUnfinishedEntry();
         void pushEntryToModel(UnfinishedWorkDay unfinishedWorkDay);
     }
 
     interface Model {
         void addOrUpdate(UnfinishedWorkDay unfinishedWorkDay);
         UnfinishedWorkDay getUnfinishedEntry();
+
     }
 
-    interface View {
+    interface iView {
         void onSaveButtonClick();
         void onStart();
         void onRestart();
         void updateView();
+        void loadNotFinishedData(UnfinishedWorkDay day);
     }
 }

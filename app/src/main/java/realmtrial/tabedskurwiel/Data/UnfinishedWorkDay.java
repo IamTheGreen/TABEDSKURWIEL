@@ -17,9 +17,18 @@ public class UnfinishedWorkDay extends RealmObject implements Days {
     private Date date;
     private Date createdAt;
     private RealmList<Route> routeList;
+    private TmpRoute tmpRoute;
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public TmpRoute getTmpRoute() {
+        return tmpRoute;
+    }
+
+    public void setTmpRoute(TmpRoute tmpRoute) {
+        this.tmpRoute = tmpRoute;
     }
 
     private boolean isFinished;
@@ -29,6 +38,7 @@ public class UnfinishedWorkDay extends RealmObject implements Days {
         this.date = new Date();
         this.createdAt = new Date();
         this.routeList = new RealmList<>();
+        this.tmpRoute = new TmpRoute();
         this.isFinished = false;
     }
 
