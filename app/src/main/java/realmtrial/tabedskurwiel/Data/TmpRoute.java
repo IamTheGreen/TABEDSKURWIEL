@@ -6,7 +6,7 @@ import io.realm.RealmObject;
  * Created by mttx on 2017-04-18.
  */
 
-public class Route extends RealmObject {
+public class TmpRoute extends RealmObject {
     private int id;
     private String locationStart;
     private String locationStop;
@@ -15,24 +15,11 @@ public class Route extends RealmObject {
     private int minutes;
     private boolean isComplete;
 
-    public boolean isComplete() {
-        if(locationStart.length()==0){isComplete=false;} else {isComplete=true;}
-        if(locationStop.length()==0){isComplete=false;} else{isComplete=true;}
-        if(String.valueOf(distance).length()==0){isComplete=false;}else{isComplete=true;}
-        if(String.valueOf(hours).length()==0){isComplete=false;}else{isComplete=true;}
-        if(String.valueOf(minutes).length()==0){isComplete=false;}else{isComplete=true;}
-        return isComplete;
-    }
-
-    public void setComplete(boolean complete) {
-        isComplete = complete;
-    }
-
-    public Route() {
+    public TmpRoute() {
     }
 
 
-    public Route(int id, String locationStart, String locationStop, int distance, int hours, int minutes) {
+    public TmpRoute(int id, String locationStart, String locationStop, int distance, int hours, int minutes) {
         this.id = id;
         this.locationStart = locationStart;
         this.locationStop = locationStop;

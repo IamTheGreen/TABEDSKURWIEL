@@ -1,14 +1,12 @@
 package realmtrial.tabedskurwiel.adding;
 
-import java.util.Date;
-import java.util.IllegalFormatCodePointException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmModel;
 import io.realm.RealmResults;
-import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
 import realmtrial.tabedskurwiel.Data.WorkDay;
+import realmtrial.tabedskurwiel.adding.NewData.Day;
 
 /**
  * Created by mttx on 2017-04-21.
@@ -16,54 +14,55 @@ import realmtrial.tabedskurwiel.Data.WorkDay;
 
 public class AddingModel implements iAddingMvp.Model {
     private Realm realm;
+    private Day day;
 
     public AddingModel() {
         realm = Realm.getDefaultInstance();
     }
 
     @Override
-    public void addOrUpdate(UnfinishedWorkDay unfinishedWorkDay) {
+    public void addOrUpdate(Day day) {
+        long nextPrimaryKey;
+        realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        if(unfinishedWorkDay.isFinished()){
-            long primaryKey;
-            try{
-                primaryKey = (long) realm.where(WorkDay.class).max("id")+1;
-            }catch (NullPointerException ex){
-                primaryKey = 1;
-            }
-            WorkDay workDay = new WorkDay();
-            workDay.setId(primaryKey);
-            workDay.setDate(new Date());
-            workDay.setRouteList(unfinishedWorkDay.getRouteList());
-            workDay.generateSummaryData();
-            realm.copyToRealm(workDay);
-        } else{
-            realm.copyToRealmOrUpdate(unfinishedWorkDay);
-        }
-        realm.commitTransaction();
-    }
-
-    public UnfinishedWorkDay getUnfinishedEntry(){
-        UnfinishedWorkDay unfinishedWorkDay;
-        realm.beginTransaction();
-        UnfinishedWorkDay result = realm.where(UnfinishedWorkDay.class).findFirst();
 
         try{
-            unfinishedWorkDay = realm.copyFromRealm(result);
-        }catch (IllegalArgumentException ex){
-            unfinishedWorkDay = new UnfinishedWorkDay();
+            nextPrimaryKey = (long) realm.where(Day.class).max("id")+1;
+        }catch (NullPointerException ex){
+            nextPrimaryKey = 1;
         }
+
+        if(day.getId()==0){
+            day.setId(nextPrimaryKey);
+        }
+
+        realm.copyToRealmOrUpdate(day);
         realm.commitTransaction();
-        return unfinishedWorkDay;
+        realm.close();
     }
 
-    public List<WorkDay> getAllEntries(){
-        Realm realm = Realm.getDefaultInstance();
+    public Day getLastEntry(){
+        realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmResults results = realm.where(WorkDay.class).findAll();
-        List<WorkDay> lista = realm.copyFromRealm(results);
+        try{
+            day = realm.copyFromRealm(realm.where(Day.class).equalTo("isFinished",false).findFirst());
+        } catch (IllegalArgumentException ex){
+            day = new Day();
+        }
         realm.commitTransaction();
-        return lista;
+        realm.close();
+        return day;
+    }
+
+    public List<Day> getFullDayList(){
+        realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults results = realm.where(Day.class).findAll();
+        List<Day> days = new ArrayList<>();
+        days.addAll(realm.copyFromRealm(results));
+        realm.commitTransaction();
+        realm.close();
+        return days;
     }
 }
 

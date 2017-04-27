@@ -11,16 +11,18 @@ import java.util.List;
 
 import realmtrial.tabedskurwiel.Data.Route;
 import realmtrial.tabedskurwiel.Data.WorkDay;
+import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
 
 //@SuppressLint("InflateParams")
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> {
-    private List<WorkDay> workDayList;
+    private List<Day> workDayList;
 
-    public StatsAdapter(List<WorkDay> workDayList) {
+    public StatsAdapter(List<Day> workDayList) {
         this.workDayList = workDayList;
     }
 
-    public void setWorkDayList(List<WorkDay> workDayList) {
+    public void setWorkDayList(List<Day> workDayList) {
         this.workDayList = workDayList;
     }
 
@@ -37,9 +39,9 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> 
     // Replace the contents of a view
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        List<Route> routeList = workDayList.get(position).getRouteList();
+        List<MidPoint> routeList = workDayList.get(position).getMidPoints();
 
-        viewHolder.startLocation.setText(workDayList.get(position).toString());
+        viewHolder.startLocation.setText(workDayList.get(position).toStrongs());
     }
 
     // class to hold a reference to each item of RecyclerView

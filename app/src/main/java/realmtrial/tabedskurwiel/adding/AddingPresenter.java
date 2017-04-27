@@ -2,6 +2,7 @@ package realmtrial.tabedskurwiel.adding;
 
 
 import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
+import realmtrial.tabedskurwiel.adding.NewData.Day;
 
 /**
  * Created by mttx on 2017-04-21.
@@ -15,24 +16,24 @@ public class AddingPresenter implements iAddingMvp.Presenter{
         this.mainView = mainView;
         this.model = model;
     }
-
     @Override
-    public void pushEntryToModel(UnfinishedWorkDay unfinishedWorkDay){
-        model.addOrUpdate(unfinishedWorkDay);
+    public void makeTestData(){
+        Day day = new Day();
+        day.setLocationStop("not finish");
+        day.setLocationStart("I am");
+        day.setFinished(false);
+        model.addOrUpdate(day);
     }
-
     @Override
-    public UnfinishedWorkDay getUnfinishedEntry(){
-        UnfinishedWorkDay day = model.getUnfinishedEntry();
-        mainView.loadNotFinishedData(day);
-
-        return model.getUnfinishedEntry();
+    public void updateModel(Day day){
+        model.addOrUpdate(day);
+        onCreate();
     }
 
     @Override
     public void onCreate() {
-        UnfinishedWorkDay day = model.getUnfinishedEntry();
-        mainView.loadNotFinishedData(day);
+        // Check is there existist unfinished object.
+        mainView.assignDayToHolder(model.getLastEntry());
     }
 
     @Override
@@ -51,9 +52,10 @@ public class AddingPresenter implements iAddingMvp.Presenter{
     }
 
     @Override
-    public void updateView(Days days) {
+    public void updateView() {
 
     }
+
 }
 
 

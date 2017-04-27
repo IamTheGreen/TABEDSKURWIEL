@@ -27,6 +27,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import butterknife.OnTextChanged;
 import io.realm.Realm;
 import io.realm.RealmList;
 import realmtrial.tabedskurwiel.AddingAdapter;
@@ -35,15 +36,13 @@ import realmtrial.tabedskurwiel.Data.TmpRoute;
 import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
 import realmtrial.tabedskurwiel.Data.WorkDay;
 import realmtrial.tabedskurwiel.R;
+import realmtrial.tabedskurwiel.adding.NewData.Day;
 
 public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iView {
     private iAddingMvp.Presenter presenter;
     private int mYear, mMonth, mDay;
     private final Calendar c = Calendar.getInstance();
-    private UnfinishedWorkDay unfinishedWorkDay = new UnfinishedWorkDay();
-    private TmpRoute tmpRoute;
-    private WorkDay workDayHolder;
-    private Route route;
+    private Day dayHolder;
     private RecyclerView recyclerView;
     private AddingAdapter adapter;
 
@@ -71,8 +70,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     @BindViews({R.id.adding_start_location,R.id.adding_stop_location,R.id.adding_distance,R.id.adding_hours,R.id.adding_minutes })
     List<EditText> editTextList;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,17 +82,21 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         initializeDateField();
         initializeRecyclerView();
         presenter = new AddingPresenter(this, new AddingModel());
+        presenter.onCreate();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         presenter.onCreate();
+
     }
 
     @Override
     public void onRestart() {
         super.onRestart();
+        presenter.onCreate();
+
     }
 
     @Override
@@ -104,62 +105,49 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
     }
+
     @Override
-    public void loadNotFinishedData(UnfinishedWorkDay day){
-        unfinishedWorkDay = day;
-        tmpRoute = unfinishedWorkDay.getTmpRoute();
-        refreshViewWithLastEntry();
+    public void onResume(){
+        super.onResume();
+        presenter.onCreate();
     }
 
-    void refreshViewWithLastEntry(){
-        startLocation.setText(unfinishedWorkDay.getTmpRoute().getLocationStart());
-        stopLocation.setText(unfinishedWorkDay.getTmpRoute().getLocationStop());
-        distance.setText(String.valueOf(unfinishedWorkDay.getTmpRoute().getDistance()));
-        hours.setText(String.valueOf(unfinishedWorkDay.getTmpRoute().getHours()));
-        minutes.setText(String.valueOf(unfinishedWorkDay.getTmpRoute().getMinutes()));
-        adapter.setRouteList(unfinishedWorkDay.getRouteList());
-        adapter.notifyDataSetChanged();
-    }
 
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
-        Route route = new Route();
-        route.setLocationStart(unfinishedWorkDay.getTmpRoute().getLocationStart());
-        route.setLocationStop(unfinishedWorkDay.getTmpRoute().getLocationStop());
-        route.setDistance(unfinishedWorkDay.getTmpRoute().getDistance());
-        route.setHours(unfinishedWorkDay.getTmpRoute().getHours());
-        route.setMinutes(unfinishedWorkDay.getTmpRoute().getMinutes());
-        unfinishedWorkDay.getRouteList().add(route);
+        dayHolder.setLocationStart(startLocation.getText().toString());
+        dayHolder.setLocationStop(stopLocation.getText().toString());
+        presenter.updateModel(dayHolder);
+    }
+
+    @Override
+    public void assignDayToHolder(Day day) {
+        dayHolder = day;
+        refreshView();
     }
 
     @OnClick(R.id.adding_button_saveDay)
         public void onSaveDayClick() {
-        onSaveButtonClick();
-        unfinishedWorkDay.setFinished(true);
-        presenter.pushEntryToModel(unfinishedWorkDay);
+        dayHolder.setLocationStart(startLocation.getText().toString());
+        dayHolder.setLocationStop(stopLocation.getText().toString());
+        dayHolder.setFinished(true);
+        presenter.updateModel(dayHolder);
     }
 
-    @OnFocusChange({R.id.adding_start_location,R.id.adding_stop_location,R.id.adding_distance,R.id.adding_hours,R.id.adding_minutes})
-    void saveInputOnFocusChange(EditText editText){
-        switch (editText.getId()){
-            case R.id.adding_start_location: tmpRoute.setLocationStart(startLocation.getText().toString());break;
-            case R.id.adding_stop_location:  tmpRoute.setLocationStop(stopLocation.getText().toString()); break;
-            case R.id.adding_distance:       tmpRoute.setDistance(parseNumericalEntry(distance)); break;
-            case R.id.adding_hours:          tmpRoute.setHours(parseNumericalEntry(hours)); break;
-            case R.id.adding_minutes:        tmpRoute.setMinutes(parseNumericalEntry(minutes)); break;
-        }
+    @Override
+    public void refreshView(){
+        startLocation.setText(dayHolder.getLocationStart());
+        stopLocation.setText(dayHolder.getLocationStop());
+        distance.setText(dayHolder.getDistance());
+        hours.setText(dayHolder.getHours());
+        minutes.setText(dayHolder.getMinutes());
+        adapter.setRouteList(dayHolder.getMidPoints());
+        statusBar.setText(dayHolder.toStrongs());
     }
-
-
 
 
 
@@ -206,7 +194,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         realm.beginTransaction();
         realm.deleteAll();
         realm.commitTransaction();
-        realm.close();
         adapter.notifyDataSetChanged();
     }
 
@@ -231,8 +218,8 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
 
     void initializeRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        workDayHolder = new WorkDay();
-        adapter = new AddingAdapter(unfinishedWorkDay.getRouteList());
+        dayHolder = new Day();
+        adapter = new AddingAdapter(dayHolder.getMidPoints());
         //set adapter
         recyclerView.setAdapter(adapter);
         //set item animator to DefaultAnimator

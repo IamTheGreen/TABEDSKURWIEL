@@ -32,13 +32,13 @@ public class Frag extends Fragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         addingModel = new AddingModel();
-        adapter = new StatsAdapter(addingModel.getAllEntries());
+        adapter = new StatsAdapter(addingModel.getFullDayList());
         //set adapter
         recyclerView.setAdapter(adapter);
         //set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         TextView status = (TextView)rootView.findViewById(R.id.textView);
-        status.setText(""+addingModel.getAllEntries().size() + "Rozmiar Listy");
+        status.setText(""+addingModel.getFullDayList().size() + "Rozmiar Listy");
         return rootView;
     }
 

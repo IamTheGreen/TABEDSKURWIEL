@@ -10,17 +10,19 @@ import android.widget.TextView;
 import java.util.List;
 
 import realmtrial.tabedskurwiel.Data.Route;
+import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
 
 @SuppressLint("InflateParams")
 public class AddingAdapter extends RecyclerView.Adapter<AddingAdapter.ViewHolder> {
-    private List<Route> routeList;
+    private List<MidPoint> midPoints;
 
-    public AddingAdapter(List<Route> routeList) {
-        this.routeList = routeList;
+    public AddingAdapter(List<MidPoint> midPoints) {
+        this.midPoints = midPoints;
     }
 
-    public void setRouteList(List<Route> routeList) {
-        this.routeList = routeList;
+    public void setRouteList(List<MidPoint> midPoints) {
+        this.midPoints = midPoints;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class AddingAdapter extends RecyclerView.Adapter<AddingAdapter.ViewHolder
     // Replace the contents of a view
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.startLocation.setText(routeList.get(position).toString());
+        viewHolder.startLocation.setText(midPoints.get(position).toString());
     }
 
     // class to hold a reference to each item of RecyclerView
@@ -54,6 +56,6 @@ public class AddingAdapter extends RecyclerView.Adapter<AddingAdapter.ViewHolder
     // Returns the size of the routeList
     @Override
     public int getItemCount() {
-        return routeList.size();
+        return midPoints.size();
     }
 }
