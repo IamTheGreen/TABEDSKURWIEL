@@ -96,7 +96,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     public void onRestart() {
         super.onRestart();
         presenter.onCreate();
-
     }
 
     @Override
@@ -115,12 +114,10 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         presenter.onCreate();
     }
 
-
     @Override
     @OnClick(R.id.button)
     public void onSaveButtonClick() {
-        dayHolder.setLocationStart(startLocation.getText().toString());
-        dayHolder.setLocationStop(stopLocation.getText().toString());
+        saveInput(false);
         presenter.updateModel(dayHolder);
     }
 
@@ -132,14 +129,12 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
 
     @OnClick(R.id.adding_button_saveDay)
         public void onSaveDayClick() {
-        dayHolder.setLocationStart(startLocation.getText().toString());
-        dayHolder.setLocationStop(stopLocation.getText().toString());
-        dayHolder.setFinished(true);
+        saveInput(true);
         presenter.updateModel(dayHolder);
     }
 
     @Override
-    public void refreshView(){
+    public void refreshView() {
         startLocation.setText(dayHolder.getLocationStart());
         stopLocation.setText(dayHolder.getLocationStop());
         distance.setText(dayHolder.getDistance());
@@ -147,6 +142,15 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         minutes.setText(dayHolder.getMinutes());
         adapter.setRouteList(dayHolder.getMidPoints());
         statusBar.setText(dayHolder.toStrongs());
+    }
+
+    public void saveInput(Boolean isFisnihed){
+        dayHolder.setLocationStart(startLocation.getText().toString());
+        dayHolder.setLocationStop(stopLocation.getText().toString());
+        dayHolder.setDistance(distance.getText().toString());
+        dayHolder.setHours(hours.getText().toString());
+        dayHolder.setMinutes(minutes.getText().toString());
+        dayHolder.setFinished(isFisnihed);
     }
 
 

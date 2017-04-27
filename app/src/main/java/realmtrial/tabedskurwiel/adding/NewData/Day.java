@@ -85,6 +85,6 @@ public class Day extends RealmObject {
     }
 
     public String toStrongs(){
-        return "key:"+id +" / "+ locationStart+ "/ is Finished: " + isFinished();
+        return "key: "+id +" / "+ locationStart+ " " + locationStop + "/ is Finished: " + isFinished();
     }
 }
