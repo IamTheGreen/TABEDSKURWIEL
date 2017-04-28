@@ -11,62 +11,27 @@ import io.realm.annotations.PrimaryKey;
 public class Day extends RealmObject {
     @PrimaryKey
     private long id = 0;
-    private String locationStart;
-    private String locationStop;
-    private String distance;
-    private String hours;
-    private String minutes;
+    private MidPoint temporaryMidPoint = new MidPoint();
     private RealmList<MidPoint> midPoints = new RealmList<>();
     private boolean isFinished;
 
-    public String getHours() {
-        return hours;
+    public MidPoint getTemporaryMidPoint() {
+        return temporaryMidPoint;
     }
 
-    public void setHours(String hours) {
-        this.hours = hours;
-    }
-
-    public String getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(String minutes) {
-        this.minutes = minutes;
+    public void setTemporaryMidPoint(MidPoint temporaryMidPoint) {
+        this.temporaryMidPoint = temporaryMidPoint;
     }
 
     public long getId() {
-        return id;
 
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public String getLocationStart() {
-        return locationStart;
-    }
-
-    public void setLocationStart(String locationStart) {
-        this.locationStart = locationStart;
-    }
-
-    public String getLocationStop() {
-        return locationStop;
-    }
-
-    public void setLocationStop(String locationStop) {
-        this.locationStop = locationStop;
-    }
-
-    public String getDistance() {
-        return distance;
-    }
-
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
 
     public RealmList<MidPoint> getMidPoints() {
         return midPoints;
@@ -83,8 +48,20 @@ public class Day extends RealmObject {
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
-
     public String toStrongs(){
-        return "key: "+id +" / "+ locationStart+ " " + locationStop + "/ is Finished: " + isFinished();
+        String startLoc = "";
+        String endLoc = "";
+        try{
+            startLoc = midPoints.get(0).getLocationStart();
+           endLoc = midPoints.get(midPoints.size()-1).getLocationStop();
+        }catch (
+                IndexOutOfBoundsException ex
+                ){}
+        int totalDistance = 0;
+
+        for(MidPoint midPoint :midPoints){
+            totalDistance += Integer.valueOf(midPoint.getDistance()) ;
+        }
+        return "id: " + id + " z " + startLoc +" do " +endLoc + " Dystans: " + String.valueOf(totalDistance);
     }
 }
