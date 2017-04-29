@@ -22,7 +22,6 @@ import io.realm.Realm;
 import realmtrial.tabedskurwiel.AddingAdapter;
 import realmtrial.tabedskurwiel.R;
 import realmtrial.tabedskurwiel.adding.NewData.Day;
-import realmtrial.tabedskurwiel.adding.NewData.HELPER;
 import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
 
 public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iView {
@@ -32,6 +31,7 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     private Day dayHolder;
     private RecyclerView recyclerView;
     private AddingAdapter adapter;
+    int iterations = 0;
 
     @BindView(R.id.adding_date)
     EditText date;
@@ -47,15 +47,17 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     EditText minutes;
     @BindView(R.id.adding_status_bar)
     TextView statusBar;
-    @BindView(R.id.addinf_validation_fix) EditText validationfix;
+    @BindView(R.id.adding_button_saveDay)
+    Button saveDay;
+    @BindView(R.id.adding_button_saveMidPoint)
+    Button saveMidPoint;
+    @BindView(R.id.adding_button_saveTemporary)
+    Button saveTemporary;
+    @BindView(R.id.button_clear)
+    Button clearDataBase;
 
-    @BindView(R.id.adding_button_saveDay) Button saveDay;
-    @BindView(R.id.adding_button_saveMidPoint) Button saveMidPoint;
-    @BindView(R.id.adding_button_saveTemporary) Button saveTemporary;
-    @BindView(R.id.button_clear) Button clearDataBase;
 
-
-    @BindViews({R.id.adding_start_location,R.id.adding_stop_location,R.id.adding_distance,R.id.adding_minutes,R.id.adding_hours})
+    @BindViews({R.id.adding_start_location, R.id.adding_stop_location, R.id.adding_distance, R.id.adding_minutes, R.id.adding_hours})
     List<EditText> editTextList;
 
     @Override
@@ -76,7 +78,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     @Override
     public void onStart() {
         super.onStart();
-        presenter.onCreate();
         adapter.setRouteList(dayHolder.getMidPoints());
     }
 
@@ -96,52 +97,78 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         presenter.onCreate();
     }
 
-    @Override
     @OnClick(R.id.adding_button_saveMidPoint)
-    public void onSaveMidPoint() {
-      if(isValidatedMidPoint()){
-          // zbuduj obiekt midpoint
-          buildTemporaryDay(false);
-          // dodaj gotowy punkt do listy puntków
-          dayHolder.getMidPoints().add(dayHolder.getTemporaryMidPoint());
-          // utworz nowy obiekt w miejsce starego
-          dayHolder.setTemporaryMidPoint(new MidPoint());
-          // zaaktualizuj widok
-          presenter.updateModel(dayHolder);
-          presenter.onCreate();
-
+    public void onAddStageButton() {
+        if (hasAllFieldsFilled()) {
+            prepareObjectToSave();
+            dayHolder.getMidPoints().add(dayHolder.getTemporaryMidPoint());
+            dayHolder.setTemporaryMidPoint(new MidPoint());
+            statusBar.setText("Dodano punkt trasy");
+            saveInput();
         } else {
-            onSaveTemporary();
-          presenter.updateModel(dayHolder);
-          presenter.onCreate();
+            prepareObjectToSave();
+            saveInput();
+            statusBar.setText("Zapisano nie dokończony punkt trasy");
         }
     }
 
-    @Override
     @OnClick(R.id.adding_button_saveDay)
-    public void onSaveDay() {
-        onSaveMidPoint();
-        buildTemporaryDay(true);
-        if(isValidatedDay()){
-            presenter.updateModel(dayHolder);
-            presenter.onCreate();
-        } else {
-            buildTemporaryDay(false);
-            presenter.updateModel(dayHolder);
-            presenter.onCreate();
+    public void onAddDayButton() {
+        if (hasAtLeastOneStage() && hasAllFieldsEmpty()) {
+            statusBar.setText("Zakończyłeś okres rozliczeniowy");
+            onAddStageButton();
+            dayHolder.setFinished(true);
+            saveInput();
         }
-        adapter.notifyDataSetChanged();
+        else if (hasAtLeastOneStage() && hasAllFieldsFilled()) {
+            statusBar.setText("Zakończyłeś okres rozliczeniowy");
+            onAddStageButton();
+            dayHolder.setFinished(true);
+            saveInput();
+        }
+        else if (!hasAtLeastOneStage() && hasAllFieldsFilled()) {
+            statusBar.setText("Zakończyłeś okres rozliczeniowy");
+            onAddStageButton();
+            dayHolder.setFinished(true);
+            saveInput();
+        }
+        else {
+            onAddStageButton();
+            statusBar.setText("Zapisano tymaczasowy obiekt");
+            dayHolder.setFinished(false);
+            saveInput();
+        }
     }
 
-    @OnClick(R.id.adding_button_saveTemporary)
-    public void onSaveTemporary(){
-       // statusBar.setText("Dane zostaną przywrócone automatycznie!!");
-        buildTemporaryDay(false);
+    void onSaver(){
+        if(isValidDay()){
+            dayHolder.setFinished(true);
+            statusBar.setText("Zakończyłeś okres rozliczeniowy");
+            onAddStageButton();
+            saveInput();
+        } else {
+            dayHolder.setFinished(false);
+            statusBar.setText("Zapisano tymaczasowy obiekt");
+            onAddStageButton();
+            saveInput();
+        }
+    }
+
+    public boolean isValidDay(){
+        if(hasAtLeastOneStage() && hasAllFieldsEmpty()){
+            return true;
+        } else if(hasAtLeastOneStage() && hasAllFieldsFilled()){
+            return true;
+        } else if(!hasAtLeastOneStage() && hasAllFieldsFilled()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -160,73 +187,53 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         adapter.notifyDataSetChanged();
     }
 
-    public void buildTemporaryDay(Boolean isFisnihed){
+    @Override
+    public void onDataRequested(Day day) {
+
+    }
+
+    public void saveInput() {
+        presenter.updateModel(dayHolder);
+        presenter.onCreate();
+    }
+
+    public boolean hasAtLeastOneStage() {
+        boolean hasStage = false;
+        if (dayHolder.getMidPoints().size() > 0) {
+            hasStage = true;
+        }
+        return hasStage;
+    }
+
+    public boolean hasAllFieldsEmpty() {
+        boolean isValidated = true;
+        for (EditText editText : editTextList) {
+            if (editText.length() != 0) {
+                isValidated = false;
+            }
+        }
+        return isValidated;
+    }
+
+    public boolean hasAllFieldsFilled() {
+        boolean isValidated = true;
+        for (EditText editText : editTextList) {
+            if (editText.length() == 0) {
+                isValidated = false;
+            }
+        }
+        return isValidated;
+    }
+
+    public void prepareObjectToSave() {
         dayHolder.getTemporaryMidPoint().setLocationStart(startLocation.getText().toString());
         dayHolder.getTemporaryMidPoint().setLocationStop(stopLocation.getText().toString());
         dayHolder.getTemporaryMidPoint().setDistance(distance.getText().toString());
         dayHolder.getTemporaryMidPoint().setHours(hours.getText().toString());
         dayHolder.getTemporaryMidPoint().setMinutes(minutes.getText().toString());
-        dayHolder.getTemporaryMidPoint().setMidPointId(dayHolder.getMidPoints().size()+1);
+        dayHolder.getTemporaryMidPoint().setMidPointId(dayHolder.getMidPoints().size() + 1);
         adapter.setRouteList(dayHolder.getMidPoints());
-        dayHolder.setFinished(isFisnihed);
     }
-
-    public boolean isValidatedMidPoint(){
-        boolean isValidated = true;
-        StringBuilder sb = new StringBuilder();
-        for(EditText editText : editTextList){
-         sb.append(editText.length() + ",");
-            if(editText.length()==0){
-                isValidated = false;
-            }
-        }
-        statusBar.setText(sb.toString() + isValidated);
-        return isValidated;
-    }
-
-    public boolean isValidatedDay() {
-        boolean isValidated = true;
-        if (dayHolder.getMidPoints().size() == 0) {
-            isValidated = false;
-            statusBar.setText("Dodaj conajmniej jeden etap podrózy");
-        }  else
-            {isValidated = true;}
-    return isValidated;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @OnClick(R.id.button_clear)
     void clearDb() {
@@ -235,18 +242,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         realm.deleteAll();
         realm.commitTransaction();
         adapter.notifyDataSetChanged();
-    }
-
-
-    int parseNumericalEntry(EditText editText) {
-        int parsedEntry = 0;
-        try {
-            parsedEntry = Integer.parseInt(editText.getText().toString());
-        } catch (NumberFormatException exp) {
-            editText.setText("");
-            Toast.makeText(this, "Puste pole zastąpione zostaną zerami", Toast.LENGTH_SHORT).show();
-        }
-        return parsedEntry;
     }
 
     void initializeDateField() {
@@ -265,22 +260,4 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         //set item animator to DefaultAnimator
         recyclerView.setItemAnimator(new DefaultItemAnimator());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-

@@ -13,7 +13,7 @@ public class Day extends RealmObject {
     private long id = 0;
     private MidPoint temporaryMidPoint = new MidPoint();
     private RealmList<MidPoint> midPoints = new RealmList<>();
-    private boolean isFinished;
+    private boolean isFinished = false;
 
     public MidPoint getTemporaryMidPoint() {
         return temporaryMidPoint;
