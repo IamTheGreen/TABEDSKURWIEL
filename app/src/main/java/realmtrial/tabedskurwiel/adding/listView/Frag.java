@@ -1,6 +1,5 @@
-package realmtrial.tabedskurwiel;
+package realmtrial.tabedskurwiel.adding.listView;
 
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,10 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
-import realmtrial.tabedskurwiel.Data.Randomizer;
+import butterknife.OnClick;
+import realmtrial.tabedskurwiel.R;
+import realmtrial.tabedskurwiel.Randomizator;
+import realmtrial.tabedskurwiel.StatsAdapter;
 import realmtrial.tabedskurwiel.adding.AddingModel;
 
 /**
@@ -23,6 +26,9 @@ public class Frag extends Fragment {
     private AddingModel addingModel;
     private RecyclerView recyclerView;
     private StatsAdapter adapter;
+
+    @BindView(R.id.button2)
+    Button button;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +52,12 @@ public class Frag extends Fragment {
     public void onResume(){
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.button2)
+    void loadData(){
+        Randomizator randomizator = new Randomizator();
+        addingModel.addBunch(randomizator.getRandomDays());
     }
 }
 

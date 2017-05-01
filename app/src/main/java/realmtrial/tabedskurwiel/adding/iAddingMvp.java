@@ -1,10 +1,8 @@
 package realmtrial.tabedskurwiel.adding;
 
-import java.util.List;
-
-import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
-import realmtrial.tabedskurwiel.Data.WorkDay;
+import io.realm.RealmList;
 import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.adding.NewData.StartOrCLose;
 
 /**
  * Created by mttx on 2017-04-21.
@@ -13,28 +11,29 @@ import realmtrial.tabedskurwiel.adding.NewData.Day;
 public interface iAddingMvp {
 
     interface Presenter {
-        void onCreate();
-        void onRestore(Days day);
-        void onPause(Days day);
-        void onSave(Days day);
-        void updateView();
-        void makeTestData();
-
-
-        void updateModel(Day day);
+        void restoreOnLifeCycleEvent();
+        void saveFinishedDay();
+        void saveUnFinishedDay();
+        void showClosingAlertDialog();
+        void loadRandomData();
     }
 
     interface Model {
         void addOrUpdate(Day day);
+        void addBunch(RealmList<Day> days);
+
         Day getLastEntry();
     }
 
     interface iView {
-        void onSaveButtonClick();
-        void assignDayToHolder(Day day);
+        void setCurrentDayTo(Day day);
+
         void refreshView();
-        void onStart();
-        void onRestart();
-        void updateView();
+
+        void updateView(String string);
+
+        Day getCurrentDay();
+
+        void showAlertDialog(final StartOrCLose startOrClose);
     }
 }

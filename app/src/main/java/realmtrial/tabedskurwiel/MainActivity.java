@@ -23,6 +23,7 @@ import android.widget.TextView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realmtrial.tabedskurwiel.adding.ActivityAdding;
+import realmtrial.tabedskurwiel.adding.listView.Frag;
 
 public class MainActivity extends AppCompatActivity {
 

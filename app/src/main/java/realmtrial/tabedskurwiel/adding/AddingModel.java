@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
-import realmtrial.tabedskurwiel.Data.WorkDay;
 import realmtrial.tabedskurwiel.adding.NewData.Day;
 
 /**
@@ -41,6 +41,14 @@ public class AddingModel implements iAddingMvp.Model {
         realm.close();
     }
 
+    public void addBunch(RealmList<Day> days){
+        realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(days);
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public Day getLastEntry(){
         realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -57,7 +65,7 @@ public class AddingModel implements iAddingMvp.Model {
     public List<Day> getFullDayList(){
         realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmResults results = realm.where(Day.class).findAll();
+        RealmResults results = realm.where(Day.class).equalTo("isFinished",true).findAll();
         List<Day> days = new ArrayList<>();
         days.addAll(realm.copyFromRealm(results));
         realm.commitTransaction();

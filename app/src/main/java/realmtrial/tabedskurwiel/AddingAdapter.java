@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import realmtrial.tabedskurwiel.Data.Route;
-import realmtrial.tabedskurwiel.adding.NewData.Day;
 import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
 
 @SuppressLint("InflateParams")
@@ -38,18 +36,19 @@ public class AddingAdapter extends RecyclerView.Adapter<AddingAdapter.ViewHolder
     // Replace the contents of a view
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.startLocation.setText(midPoints.get(position).toString());
+        viewHolder.firstLine.setText(midPoints.get(position).toAddingListView());
     }
 
     // class to hold a reference to each item of RecyclerView
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView startLocation;
-        public TextView distance;
+        public TextView firstLine;
+        public TextView secondLine;
 
 
         public ViewHolder(final View itemLayoutView) {
             super(itemLayoutView);
-            startLocation = (TextView) itemLayoutView.findViewById(R.id.recycler_start_location);
+            firstLine = (TextView) itemLayoutView.findViewById(R.id.recycler_first_line);
+            secondLine = (TextView) itemLayoutView.findViewById(R.id.recycler_second_line);
         }
     }
 

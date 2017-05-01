@@ -1,90 +1,54 @@
 package realmtrial.tabedskurwiel.adding;
-
-
-import realmtrial.tabedskurwiel.Data.UnfinishedWorkDay;
-import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.Randomizator;
+import realmtrial.tabedskurwiel.adding.NewData.StartOrCLose;
 
 /**
  * Created by mttx on 2017-04-21.
  */
 
+
 public class AddingPresenter implements iAddingMvp.Presenter{
     private iAddingMvp.iView mainView;
     private iAddingMvp.Model model;
+    private Randomizator randomizator = new Randomizator();
 
     public AddingPresenter(iAddingMvp.iView mainView, iAddingMvp.Model model) {
         this.mainView = mainView;
         this.model = model;
     }
+
     @Override
-    public void makeTestData(){
-        Day day = new Day();
-        day.setLocationStop("not finish");
-        day.setLocationStart("I am");
-        day.setFinished(false);
-        model.addOrUpdate(day);
-    }
-    @Override
-    public void updateModel(Day day){
-        model.addOrUpdate(day);
-        onCreate();
+    public void restoreOnLifeCycleEvent() {
+        mainView.setCurrentDayTo(model.getLastEntry());
+        if(model.getLastEntry().getId()==0){
+            mainView.updateView("Zaczynasz dzień, powodzonka,szerokości kolego.");
+        } else {
+            mainView.updateView("Kontynuujesz dzień, szerokości!");
+        }
     }
 
     @Override
-    public void onCreate() {
-        // Check is there existist unfinished object.
-        mainView.assignDayToHolder(model.getLastEntry());
+    public void saveFinishedDay() {
+        model.addOrUpdate(mainView.getCurrentDay());
+        mainView.updateView("Zakończono okres rozliczeniowy");
+        mainView.refreshView();
     }
 
     @Override
-    public void onRestore(Days day) {
-
+    public void saveUnFinishedDay() {
+        model.addOrUpdate(mainView.getCurrentDay());
+        mainView.updateView("Zapisano tymczasową trasę");
+        mainView.refreshView();
     }
 
     @Override
-    public void onPause(Days day) {
-
+    public void showClosingAlertDialog(){
+        mainView.showAlertDialog(StartOrCLose.CLOSE);
     }
 
-    @Override
-    public void onSave(Days day) {
-
+    public void loadRandomData(){
+        randomizator.addCities();
+        mainView.updateView(""+randomizator.getRandomDays().size());
+        model.addBunch(randomizator.getRandomDays());
     }
-
-    @Override
-    public void updateView() {
-
-    }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,18 +7,33 @@ import io.realm.RealmObject;
  */
 
 public class MidPoint extends RealmObject {
-    private String locationMidPoint;
+    private int midPointId;
+    private String locationStart;
+    private String locationStop;
     private String distance;
     private String hours;
     private String minutes;
 
-    public String getLocationMidPoint() {
-        return locationMidPoint;
+    public int getMidPointId() {
+        return midPointId;
+    }
+    public void setMidPointId(int midPointId) {
+        this.midPointId = midPointId;
+    }
+    public String getLocationStart() {
+        return locationStart;
+    }
+    public void setLocationStart(String locationStart) {
+        this.locationStart = locationStart;
     }
 
-    public void setLocationMidPoint(String locationMidPoint) {
-        this.locationMidPoint = locationMidPoint;
+    public String getLocationStop() {
+        return locationStop;
     }
+    public void setLocationStop(String locationStop) {
+        this.locationStop = locationStop;
+    }
+
 
     public String getDistance() {
         return distance;
@@ -39,8 +54,13 @@ public class MidPoint extends RealmObject {
     public String getMinutes() {
         return minutes;
     }
-
     public void setMinutes(String minutes) {
         this.minutes = minutes;
     }
+
+    public String toAddingListView(){
+        return midPointId +"." + locationStart.toUpperCase() + "-" + locationStop.toUpperCase() +".  "+ distance + "km.";
+    }
+
+
 }

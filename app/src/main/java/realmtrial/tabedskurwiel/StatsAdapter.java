@@ -1,6 +1,5 @@
 package realmtrial.tabedskurwiel;
 
-import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import realmtrial.tabedskurwiel.Data.Route;
-import realmtrial.tabedskurwiel.Data.WorkDay;
 import realmtrial.tabedskurwiel.adding.NewData.Day;
 import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
 
@@ -50,7 +47,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.ViewHolder> 
 
         public ViewHolder(final View itemLayoutView) {
             super(itemLayoutView);
-            startLocation = (TextView) itemLayoutView.findViewById(R.id.recycler_start_location);
+            startLocation = (TextView) itemLayoutView.findViewById(R.id.recycler_first_line);
         }
     }
 

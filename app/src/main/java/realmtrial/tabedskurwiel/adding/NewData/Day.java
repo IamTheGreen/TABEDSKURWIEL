@@ -1,5 +1,7 @@
 package realmtrial.tabedskurwiel.adding.NewData;
 
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -14,6 +16,61 @@ public class Day extends RealmObject {
     private MidPoint temporaryMidPoint = new MidPoint();
     private RealmList<MidPoint> midPoints = new RealmList<>();
     private boolean isFinished = false;
+    private int startHour;
+    private int startMinute;
+    private int endHour;
+    private int endMinute;
+    private boolean startTimeSet = false;
+
+    public boolean isStartTimeSet() {
+        return startTimeSet;
+    }
+
+    public void setStartTimeSet(boolean startTimeSet) {
+        this.startTimeSet = startTimeSet;
+    }
+
+    private Date date;
+
+    public int getStartHour() {
+        return startHour;
+    }
+
+    public void setStartHour(int startHour) {
+        this.startHour = startHour;
+    }
+
+    public int getStartMinute() {
+        return startMinute;
+    }
+
+    public void setStartMinute(int startMinute) {
+        this.startMinute = startMinute;
+    }
+
+    public int getEndHour() {
+        return endHour;
+    }
+
+    public void setEndHour(int endHour) {
+        this.endHour = endHour;
+    }
+
+    public int getEndMinute() {
+        return endMinute;
+    }
+
+    public void setEndMinute(int endMinute) {
+        this.endMinute = endMinute;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public MidPoint getTemporaryMidPoint() {
         return temporaryMidPoint;
@@ -24,14 +81,12 @@ public class Day extends RealmObject {
     }
 
     public long getId() {
-
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
-
 
     public RealmList<MidPoint> getMidPoints() {
         return midPoints;
@@ -45,9 +100,11 @@ public class Day extends RealmObject {
         return isFinished;
     }
 
+
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
+
     public String toStrongs(){
         String startLoc = "";
         String endLoc = "";
@@ -62,6 +119,6 @@ public class Day extends RealmObject {
         for(MidPoint midPoint :midPoints){
             totalDistance += Integer.valueOf(midPoint.getDistance()) ;
         }
-        return "id: " + id + " z " + startLoc +" do " +endLoc + " Dystans: " + String.valueOf(totalDistance);
+        return  startLoc.toUpperCase() +" do " +endLoc.toUpperCase() + ", " + String.valueOf(totalDistance) + "KM.";
     }
 }
