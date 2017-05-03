@@ -1,9 +1,9 @@
-package realmtrial.tabedskurwiel.adding.listView;
+package realmtrial.tabedskurwiel.listView;
 
 import java.util.Date;
 import java.util.List;
 
-import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.Data.Day;
 
 /**
  * Created by mttx on 2017-04-30.

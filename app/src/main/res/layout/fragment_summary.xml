@@ -6,11 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/summary_filter"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -21,12 +32,10 @@
         app:cardCornerRadius="9dp"
         app:cardElevation="2dp"
         app:contentPadding="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
@@ -44,13 +53,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="59dp"
                 android:text="Przejechane"
-                app:layout_constraintBottom_toBottomOf="@+id/summary_total_mileage"
+                app:layout_constraintBottom_toBottomOf="@+id/summary_total_distance"
                 app:layout_constraintHorizontal_bias="0.126"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/view7" />
 
             <TextView
-                android:id="@+id/summary_total_mileage"
+                android:id="@+id/summary_total_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -70,7 +79,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/cardview_shadow_start_color"
-                app:layout_constraintLeft_toRightOf="@+id/summary_total_mileage"
+                app:layout_constraintLeft_toRightOf="@+id/summary_total_distance"
                 app:layout_constraintRight_toLeftOf="@+id/summary_total_hours"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,7 +103,7 @@
                 app:layout_constraintHorizontal_bias="0.805"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/view7"
-                app:layout_constraintTop_toTopOf="@+id/summary_total_mileage" />
+                app:layout_constraintTop_toTopOf="@+id/summary_total_distance" />
 
             <TextView
                 android:id="@+id/summary_total_hours"
@@ -107,7 +116,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/view7"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/summary_total_mileage" />
+                app:layout_constraintTop_toTopOf="@+id/summary_total_distance" />
 
             <TextView
                 android:id="@+id/summary_static_pracy"
@@ -148,13 +157,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="59dp"
                 android:text="Przejechane"
-                app:layout_constraintBottom_toBottomOf="@+id/summary_total_mileage"
+                app:layout_constraintBottom_toBottomOf="@+id/summary_total_distance"
                 app:layout_constraintHorizontal_bias="0.126"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/view7" />
 
             <TextView
-                android:id="@+id/summary_total_mileage"
+                android:id="@+id/summary_total_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -174,7 +183,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/cardview_shadow_start_color"
-                app:layout_constraintLeft_toRightOf="@+id/summary_total_mileage"
+                app:layout_constraintLeft_toRightOf="@+id/summary_total_distance"
                 app:layout_constraintRight_toLeftOf="@+id/summary_total_hours"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -198,7 +207,7 @@
                 app:layout_constraintHorizontal_bias="0.805"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/view7"
-                app:layout_constraintTop_toTopOf="@+id/summary_total_mileage" />
+                app:layout_constraintTop_toTopOf="@+id/summary_total_distance" />
 
             <TextView
                 android:id="@+id/summary_total_hours"
@@ -211,7 +220,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/view7"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/summary_total_mileage" />
+                app:layout_constraintTop_toTopOf="@+id/summary_total_distance" />
 
             <TextView
                 android:id="@+id/summary_static_pracy"
@@ -223,6 +232,7 @@
                 app:layout_constraintLeft_toRightOf="@+id/view7"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/summary_total_hours" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>

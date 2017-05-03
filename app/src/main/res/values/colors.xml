@@ -3,5 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>
-    <color name="ListViewItem">#ededed</color>
+    <color name="ListViewItem">#eeeeee</color>
+    <color name="ButtonFontcoloer">#777777</color>
 </resources>

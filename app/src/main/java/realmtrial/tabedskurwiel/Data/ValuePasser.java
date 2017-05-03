@@ -1,4 +1,4 @@
-package realmtrial.tabedskurwiel.adding.NewData;
+package realmtrial.tabedskurwiel.Data;
 
 /**
  * Created by mttx on 2017-04-30.

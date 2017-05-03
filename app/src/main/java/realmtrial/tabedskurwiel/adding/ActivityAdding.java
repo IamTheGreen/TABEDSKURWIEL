@@ -1,5 +1,6 @@
 package realmtrial.tabedskurwiel.adding;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,12 +10,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Observer;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -22,12 +28,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import io.realm.Realm;
-import realmtrial.tabedskurwiel.AddingAdapter;
+import realmtrial.tabedskurwiel.Data.MidPoint;
 import realmtrial.tabedskurwiel.R;
-import realmtrial.tabedskurwiel.adding.NewData.Day;
-import realmtrial.tabedskurwiel.adding.NewData.MidPoint;
-import realmtrial.tabedskurwiel.adding.NewData.StartOrCLose;
-import realmtrial.tabedskurwiel.adding.NewData.ValuePasser;
+import realmtrial.tabedskurwiel.Data.Day;
+import realmtrial.tabedskurwiel.Data.StartOrCLose;
+import realmtrial.tabedskurwiel.Data.ValuePasser;
 import android.view.View;
 
 
@@ -77,7 +82,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         initializeRecyclerView();
         presenter = new AddingPresenter(this, new AddingModel());
         presenter.restoreOnLifeCycleEvent();
-
     }
 
     @Override
@@ -101,6 +105,9 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
         minutePicker.setMinValue(00);
         minutePicker.setMaxValue(59);
         minutePicker.setValue(myMinute);
+
+        values.setHour(myHour);
+        values.setMinute(myMinute);
 
         switch(startOrClose){
             case START: alertStatusBar.setText("Podaj czas ROZPOCZĘCIA");
@@ -143,10 +150,13 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
                         dayHolder.setStartHour(hourPicker.getValue());
                         dayHolder.setStartMinute(minutePicker.getValue());
                         dayHolder.setStartTimeSet(true);
+                        startLocation.requestFocus();
+                        setDate();
                         break;
                     case CLOSE:
                         dayHolder.setEndHour(hourPicker.getValue());
                         dayHolder.setEndMinute(minutePicker.getValue());
+                        presenter.saveFinishedDay();
                         break;
                 }
                 dialog.dismiss();
@@ -177,6 +187,7 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
     @Override
     public void onPause() {
         super.onPause();
+        onAddStageButton();
         presenter.saveUnFinishedDay();
     }
 
@@ -207,23 +218,25 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
 
     @Override
     public void updateView(String string) {
-        statusBar.setText(string);
+//        statusBar.setText(string);
     }
 
     @OnClick(R.id.adding_button_saveMidPoint)
     public void onAddStageButton() {
+
         presenter.loadRandomData();
+    }
+
 //        getDataFromInput();
 //        if (hasAllFieldsFilled()) {
 //            dayHolder.getMidPoints().add(dayHolder.getTemporaryMidPoint());
 //            dayHolder.setTemporaryMidPoint(new MidPoint());
-//            presenter.saveUnFinishedDay();
 //            adapter.setRouteList(dayHolder.getMidPoints());
 //            adapter.notifyDataSetChanged();
+//            presenter.saveUnFinishedDay();
 //        } else {
 //            presenter.saveUnFinishedDay();
-//        }
-    }
+//
 
     @OnClick(R.id.adding_button_saveDay)
     void onAddDayButton(){
@@ -231,8 +244,6 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
             onAddStageButton();
             dayHolder.setFinished(true);
             presenter.showClosingAlertDialog();
-           // presenter.saveFinishedDay();
-          //  presenter.restoreOnLifeCycleEvent();
         } else {
             onAddStageButton();
             dayHolder.setFinished(false);
@@ -328,5 +339,35 @@ public class ActivityAdding extends AppCompatActivity implements iAddingMvp.iVie
                 showAlertDialog(StartOrCLose.START);
             }
         }
+    }
+
+    @OnFocusChange(R.id.adding_date)
+    void changeDate(boolean hasFocus) {
+        if(hasFocus){
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+                            date.setText(dayOfMonth + "." + (monthOfYear + 1) + "." + year);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        }
+    }
+
+    public void setDate() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat tf = new SimpleDateFormat("dd.M.yyyy", Locale.GERMANY);
+
+        String chosenDate = date.getText().toString();
+        String time = "2000-08-10";
+      //  Date parsedDate = null;
+        try {
+            dayHolder.setDate(tf.parse(chosenDate));
+        } catch (ParseException ex) {
+            statusBar.setText("parse exception occured");
+        }
+      //  statusBar.setText(dayHolder.getDate().toString());
     }
 }

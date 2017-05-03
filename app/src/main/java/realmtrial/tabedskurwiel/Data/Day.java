@@ -1,4 +1,4 @@
-package realmtrial.tabedskurwiel.adding.NewData;
+package realmtrial.tabedskurwiel.Data;
 
 import java.util.Date;
 
@@ -18,9 +18,28 @@ public class Day extends RealmObject {
     private boolean isFinished = false;
     private int startHour;
     private int startMinute;
+
+    public String getStartLocation() {
+        return startLocation;
+    }
+
+    public void setStartLocation(String startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public String getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(String endLocation) {
+        this.endLocation = endLocation;
+    }
+
     private int endHour;
     private int endMinute;
     private boolean startTimeSet = false;
+    private String startLocation;
+    private String endLocation;
 
     public boolean isStartTimeSet() {
         return startTimeSet;
@@ -120,5 +139,29 @@ public class Day extends RealmObject {
             totalDistance += Integer.valueOf(midPoint.getDistance()) ;
         }
         return  startLoc.toUpperCase() +" do " +endLoc.toUpperCase() + ", " + String.valueOf(totalDistance) + "KM.";
+    }
+
+    public String getTotalDistance(){
+        int td = 0;
+        for (MidPoint midPoint : midPoints){
+            td += Integer.valueOf(midPoint.getDistance());
+        }
+        return String.valueOf(td);
+    }
+
+    public String getTotalTime(){
+        int hours = 0;
+        int minutes = 0;
+        for (MidPoint midPoint : midPoints){
+            hours += Integer.valueOf(midPoint.getHours());
+            minutes += Integer.valueOf(midPoint.getMinutes());
+        }
+
+        int hoursFromMinutes = minutes/60;
+        int restMinutes = minutes % 60;
+        int calculatored = hours + hoursFromMinutes;
+
+
+        return String.valueOf(calculatored) + ":" + (restMinutes < 10 ? "0" : "") + String.valueOf(restMinutes);
     }
 }

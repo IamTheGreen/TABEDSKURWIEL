@@ -1,8 +1,8 @@
 package realmtrial.tabedskurwiel.adding;
 
 import io.realm.RealmList;
-import realmtrial.tabedskurwiel.adding.NewData.Day;
-import realmtrial.tabedskurwiel.adding.NewData.StartOrCLose;
+import realmtrial.tabedskurwiel.Data.Day;
+import realmtrial.tabedskurwiel.Data.StartOrCLose;
 
 /**
  * Created by mttx on 2017-04-21.
@@ -21,6 +21,7 @@ public interface iAddingMvp {
     interface Model {
         void addOrUpdate(Day day);
         void addBunch(RealmList<Day> days);
+        long getAllId();
 
         Day getLastEntry();
     }

@@ -1,6 +1,6 @@
 package realmtrial.tabedskurwiel.adding;
 import realmtrial.tabedskurwiel.Randomizator;
-import realmtrial.tabedskurwiel.adding.NewData.StartOrCLose;
+import realmtrial.tabedskurwiel.Data.StartOrCLose;
 
 /**
  * Created by mttx on 2017-04-21.

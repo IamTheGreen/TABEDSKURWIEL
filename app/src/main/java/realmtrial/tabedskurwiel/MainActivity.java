@@ -23,9 +23,11 @@ import android.widget.TextView;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import realmtrial.tabedskurwiel.adding.ActivityAdding;
-import realmtrial.tabedskurwiel.adding.listView.Frag;
+import realmtrial.tabedskurwiel.listView.FullListFragment;
+import realmtrial.tabedskurwiel.summary.SummaryFragment;
 
 public class MainActivity extends AppCompatActivity {
+    FloatingActionButton fab;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         Realm.setDefaultConfiguration(config);
 
+    }
+
+    public FloatingActionButton getFab(){
+        return fab;
     }
 
     @Override
@@ -148,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0: return new Frag2();
-                case 1: return new Frag();
+                case 0: return new SummaryFragment();
+                case 1: return new FullListFragment();
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

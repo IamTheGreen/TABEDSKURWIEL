@@ -5,4 +5,19 @@
     <string name="title_activity_adding">ActivityAdding</string>
     <string name="no_unfinished_route_info">Zaczynasz nowy dzień. Szerokości Kierowco!</string>
     <string name="unfinished_route_continuation_info">Kierowca, ostatnia nie zapisana trasa została przywrócona</string>
+
+    <string-array name="summary_filter">
+        <item>Aktualna trasa</item>
+        <item>Ostatni Tydzień</item>
+        <item>Ostatni Miesiąc</item>
+    </string-array>
+
+    <string-array name="list_filters">
+        <item>Filtruj wpisy</item>
+        <item>Zakres dat</item>
+        <item>Znajdź datę</item>
+        <item>Znajdź miejsce</item>
+    </string-array>
+
+
 </resources>

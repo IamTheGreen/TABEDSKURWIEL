@@ -1,4 +1,4 @@
-package realmtrial.tabedskurwiel.adding.NewData;
+package realmtrial.tabedskurwiel.Data;
 
 import io.realm.RealmObject;
 

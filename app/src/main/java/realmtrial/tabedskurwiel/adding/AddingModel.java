@@ -6,7 +6,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import realmtrial.tabedskurwiel.adding.NewData.Day;
+import realmtrial.tabedskurwiel.Data.Day;
 
 /**
  * Created by mttx on 2017-04-21.
@@ -41,9 +41,10 @@ public class AddingModel implements iAddingMvp.Model {
         realm.close();
     }
 
-    public void addBunch(RealmList<Day> days){
+    public void addBunch(final RealmList<Day> days){
         realm = Realm.getDefaultInstance();
         realm.beginTransaction();
+        realm.copyToRealmOrUpdate(days);
         realm.copyToRealmOrUpdate(days);
         realm.commitTransaction();
         realm.close();
@@ -71,6 +72,15 @@ public class AddingModel implements iAddingMvp.Model {
         realm.commitTransaction();
         realm.close();
         return days;
+    }
+
+    public long getAllId(){
+        realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        long seks = (long) realm.where(Day.class).min("id");
+        realm.commitTransaction();
+        realm.close();
+        return seks;
     }
 }
 
